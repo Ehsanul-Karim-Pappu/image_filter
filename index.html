@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Filter</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- three.js -->
+    <!-- <script src="./library/three.js"></script>
+    <script src="./library/three.min.js"></script>
+    <script src="./library/three.module.js"></script> -->
+
+    <!-- p5 -->
+    <!-- <script src="./library/p5.js"></script>
+    <script src="./library/p5.min.js"></script>
+    <script src="./library/p5.sound.js"></script>
+    <script src="./library/p5.sound.min.js"></script> -->
+
+    <!-- duke learn to program library -->
+    <!-- <script src="./library/dltp.js"></script> -->
+    <script src="https://www.dukelearntoprogram.com/course1/common/js/image/SimpleImage.js"></script>
+
+    <h1>Image Filter</h1>
+    <canvas id="can_actuall_img"></canvas>
+    <canvas id="can_filtered_img"></canvas>
+    <p>
+        <input type="file" multiple="false" accept="image/*" id="finput_actuall" onchange="load_act_Image()">
+    </p>
+    <p>
+        <input type="button" value="Grayscale" onclick="doGray()">
+        <input type="button" value="Red Filter" onclick="doRed()">
+        <input type="button" value="Green Filter" onclick="doGreen()">
+        <input type="button" value="Blue Filter" onclick="doBlue()">
+        <input type="button" value="Invert" onclick="doInvert()">
+    </p>
+
+    <p>
+        <input type="button" value="Reset Image" onclick="reset()">
+    </p>
+    <script src="./script.js"></script>
+
+</body>
+
+</html>
