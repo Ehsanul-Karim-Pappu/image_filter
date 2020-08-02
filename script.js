@@ -127,21 +127,19 @@ function doBlur() {
 // fn for creating multidim array of zeros
 function zeros(dimensions) {
     var array = [];
-
     for (var i = 0; i < dimensions[0]; ++i) {
         array.push(dimensions.length == 1 ? 0 : zeros(dimensions.slice(1)));
     }
-
     return array;
 }
 
 function blur() {
     var ctx = canvas_actuall_img.getContext("2d");
     var imgData = ctx.getImageData(0, 0, canvas_actuall_img.width, canvas_actuall_img.height);
-    console.log(imgData.data);
-    console.log(blurImage.width, blurImage.height);
+    console.log(imgData);
+    // console.log(blurImage.width, blurImage.height);
 
-    var img = zeros([4, blurImage.width, blurImage.height]);
+    var img = zeros([4, blurImage.height, blurImage.width]);
     var px = 0, i = 0;
     for (var y = 0; y < blurImage.height; y++) {
         for (var x = 0; x < blurImage.width; x++) {
@@ -153,9 +151,53 @@ function blur() {
             px++;
         }
     }
-    console.log(img);
 
-    canvas_filtered_img.width = blueImage.width;
+    // console.log(img);
+    var img1 = zeros([4, blurImage.height, blurImage.width]);
+    var blurness = 3;
+    for (var k = 0; k < 3; k++) {
+        for (var i = 0; i < blurImage.height; i++) {
+            for (var j = 0; j < blurImage.width; j++) {
+                // console.log('k', k, 'i', i, 'j', j);
+                var r1 = i - blurness, r2 = i + blurness, c1 = j - blurness, c2 = j + blurness;
+                if (r1 < 0) r1 = 0;
+                if (r2 > blurImage.height) r2 = blurImage.height;
+                if (c1 < 0) c1 = 0;
+                if (c2 > blurImage.width) c2 = blurImage.width;
+
+                var sum = 0, cnt = 0;
+                // console.log('r1', r1, 'r2', r2, 'c1', c1, 'c2', c2);
+                for (var x = r1; x < r2; x++) {
+                    for (var y = c1; y < c2; y++) {
+                        // console.log('x =', x, 'y =', y);
+                        // console.log(img[k][x][y]);
+                        sum += img[k][x][y];
+                        cnt++;
+                    }
+                }
+                // console.log('sum', sum);
+                var mean = sum / cnt;
+                // console.log('mean', mean);
+                img1[k][i][j] = mean;
+            }
+        }
+    }
+    // console.log(img1);
+
+    var index = 0;
+    for (var i = 0; i < blurImage.height; i++) {
+        for (var j = 0; j < blurImage.width; j++) {
+            imgData.data[index++] = img1[0][i][j];
+            imgData.data[index++] = img1[1][i][j];
+            imgData.data[index++] = img1[2][i][j];
+            // imgData.data[index++] = 255;
+        }
+    }
+    imgData.data = new Uint8ClampedArray(imgData.data);
+    console.log(imgData);
+    // console.log('index', index);
+
+    canvas_filtered_img.width = blurImage.width;
     canvas_filtered_img.height = blurImage.height;
     var ctx1 = canvas_filtered_img.getContext("2d");
     ctx1.putImageData(imgData, 0, 0);
