@@ -118,10 +118,9 @@ function filterInvert() {
 }
 
 function doBlur() {
-    // if (imageIsLoaded(blurImage)) {
-    blur();
-    //     blurImage.drawTo(canvas_filtered_img);
-    // }
+    if (imageIsLoaded(blurImage)) {
+        Blur();
+    }
 }
 
 // fn for creating multidim array of zeros
@@ -133,10 +132,10 @@ function zeros(dimensions) {
     return array;
 }
 
-function blur() {
+function Blur() {
     var ctx = canvas_actuall_img.getContext("2d");
     var imgData = ctx.getImageData(0, 0, canvas_actuall_img.width, canvas_actuall_img.height);
-    console.log(imgData);
+    // console.log(imgData);
     // console.log(blurImage.width, blurImage.height);
 
     var img = zeros([4, blurImage.height, blurImage.width]);
@@ -152,23 +151,23 @@ function blur() {
         }
     }
 
-    // console.log(img);
+    // console.log('img', img);
     var img1 = zeros([4, blurImage.height, blurImage.width]);
-    var blurness = 3;
+    var blurness = 6;
     for (var k = 0; k < 3; k++) {
         for (var i = 0; i < blurImage.height; i++) {
             for (var j = 0; j < blurImage.width; j++) {
                 // console.log('k', k, 'i', i, 'j', j);
                 var r1 = i - blurness, r2 = i + blurness, c1 = j - blurness, c2 = j + blurness;
                 if (r1 < 0) r1 = 0;
-                if (r2 > blurImage.height) r2 = blurImage.height;
+                if (r2 >= blurImage.height) r2 = blurImage.height - 1;
                 if (c1 < 0) c1 = 0;
-                if (c2 > blurImage.width) c2 = blurImage.width;
+                if (c2 >= blurImage.width) c2 = blurImage.width - 1;
 
                 var sum = 0, cnt = 0;
                 // console.log('r1', r1, 'r2', r2, 'c1', c1, 'c2', c2);
-                for (var x = r1; x < r2; x++) {
-                    for (var y = c1; y < c2; y++) {
+                for (var x = r1; x <= r2; x++) {
+                    for (var y = c1; y <= c2; y++) {
                         // console.log('x =', x, 'y =', y);
                         // console.log(img[k][x][y]);
                         sum += img[k][x][y];
@@ -182,7 +181,7 @@ function blur() {
             }
         }
     }
-    // console.log(img1);
+    // console.log('img1', img1);
 
     var index = 0;
     for (var i = 0; i < blurImage.height; i++) {
@@ -190,11 +189,11 @@ function blur() {
             imgData.data[index++] = img1[0][i][j];
             imgData.data[index++] = img1[1][i][j];
             imgData.data[index++] = img1[2][i][j];
-            // imgData.data[index++] = 255;
+            imgData.data[index++] = 255;
         }
     }
     imgData.data = new Uint8ClampedArray(imgData.data);
-    console.log(imgData);
+    // console.log(imgData);
     // console.log('index', index);
 
     canvas_filtered_img.width = blurImage.width;
